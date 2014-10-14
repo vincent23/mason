@@ -1,0 +1,61 @@
+set -e -u
+set -o pipefail
+
+bzip::version() {
+    echo "1.0.6"
+}
+
+bzip::basename() {
+    echo bzip2-$(bzip::version)
+}
+
+bzip::tarball() {
+    echo $(bzip::basename).tar.gz
+}
+
+bzip::mirror() {
+    echo "http://www.bzip.org/$(bzip::version)/$(bzip::tarball)"
+}
+
+bzip::get() {
+    download ${MASON_REPO} $(bzip::tarball) | download ${MASON_REPO} $(bzip::mirror)
+}
+
+bzip::depends() {
+    echo
+}
+
+bzip::unpack() {
+    rm -rf $(bzip::basename)
+    tar xf $(bzip::tarball)
+}
+
+bzip::build() {
+    cd $(bzip::basename)
+    echo building
+}
+
+bzip::install() {
+    echo **installing bzip**
+    cd $MASON_PACKAGES
+    if [[ $(bzip::depends) != "" ]]; then
+        readonly local -a deps
+        deps=($(bzip::depends))
+        echo building deps: ${#deps[@]}
+        for i in "${deps[@]}"; do
+            true
+            #mason install $i
+        done
+    fi
+    bzip::get && bzip::unpack && bzip::build
+}
+
+main() {
+    env
+}
+
+if [ $# -gt 0 ]; then
+    bzip::$@
+else
+    main
+fi

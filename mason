@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+set -u
+
+export MASON_DIRECTORY="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P)"
+#export MASON_DIRECTORY=$(cd "${0%/*}" && pwd -P)
+export MASON_COMMAND="$MASON_DIRECTORY/${0##*/}"
+
+if [[ "${MASON_ROOT:-false}" == false ]]; then
+    mkdir -p "$MASON_DIRECTORY"/jars
+    export MASON_JARS=$(cd "$MASON_DIRECTORY"/jars && pwd -P)
+else
+   mkdir -p ${MASON_JARS}
+fi
+
+if [[ "${MASON_REPO:-false}" == false ]]; then
+    export MASON_REPO="https://mapnik.s3.amazonaws.com/deps"
+fi
+
+export MASON_PACKAGES=$(mkdir -p "$MASON_DIRECTORY"/packages && cd "$MASON_DIRECTORY"/packages && pwd -P)
+
+
+mason_err() {
+    echo "[mason $(date +'%Y-%m-%dT%H:%M:%S%z')]: $@" >&2
+    #echo "Error: $@" 1>&2;
+}
+
+function download() {
+  if [[ ! -f "${MASON_JARS}/$1" ]]; then
+    mkdir -p ${MASON_JARS}
+    cd ${MASON_JARS}
+    /usr/bin/curl -s -S -f -O -L --retry 3 $1/$2
+    cd -
+  fi
+}
+export -f download
+
+mason() {
+  if [ $# -lt 1 ]; then
+    mason help
+    return
+  fi
+
+  # Try to figure out the os and arch for binary fetching
+  local uname
+  uname="$(uname -a)"
+  local os=$(uname -s | tr "[:upper:]" "[:lower:]")
+  local arch
+  arch="$(uname -m)"
+  local GREP_OPTIONS
+  GREP_OPTIONS=''
+  case "$uname" in
+    Linux\ *) os=linux ;;
+    Darwin\ *) os=darwin ;;
+    SunOS\ *) os=sunos ;;
+    FreeBSD\ *) os=freebsd ;;
+  esac
+  case "$uname" in
+    *x86_64*) arch=x64 ;;
+    *i*86*) arch=x86 ;;
+    *armv6l*) arch=arm-pi ;;
+  esac
+
+  # initialize local variables
+  local VERSION
+  local ADDITIONAL_PARAMETERS
+  local ALIAS
+
+  case $1 in
+    "help" )
+      echo " 𐐂 Mason 𐐚"
+      echo " Usage:"
+      echo "    mason help                  Show this message"
+      echo "    mason --version             Print out the latest released version of mason"
+      echo "    mason install <package>     Download and install a <version>, [-s] from source. Uses .masonrc if available"
+      echo "    mason uninstall <package>   Uninstall a version"
+      echo
+      echo " Example:"
+      echo "    mason install boost         Install a specific package"
+      echo
+    ;;
+
+    "install" | "i" )
+      if [ $# -lt 2 ]; then
+          mason help
+          mason_err please provide the name of a package to install
+          return
+      fi
+      if [[ ! -r "${MASON_DIRECTORY}/formula/$2" ]]; then
+          mason_err "No available formula '$2'"
+          return
+      fi
+      shift
+      for var in "$@"; do
+        if [[ $var != $1 ]] && [[ $(echo $var | cut -c -2) == '--' ]]; then
+            local sub=$(echo $var | cut -c 3-)
+            local -a array=(${sub//=/ })
+            local key=${array[0]}
+            local val=${array[1]}
+            export $key=$val
+            #echo "array: '${array[@]}'"
+            #for i in "${!array[@]}"
+            #do
+            #    echo "hey $i=>${array[i]}"
+            #done
+        fi
+      done
+      "${MASON_DIRECTORY}/formula/$1" install
+      return 0
+    ;;
+    * )
+      mason help
+    ;;
+  esac
+}
+
+mason $@

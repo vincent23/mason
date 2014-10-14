@@ -1,0 +1,9 @@
+{
+   "version":"1.0.6",
+   "depends": [
+      "zlib"
+   ],
+   "basename":"bzip2-{version}",
+   "tarball":"{basename}.tar.gz",
+   "source":"http://www.bzip.org/{version}/{tarball}"
+}
