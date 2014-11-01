@@ -12,9 +12,11 @@ rm -rf test-all
 git clone --quiet https://github.com/mapbox/mason.git test-all
 cd test-all
 for b in $(git for-each-ref --sort=-committerdate refs/remotes --format='%(refname:short)'); do
-    git checkout --quiet $b
-    if [ -f ./script.sh ]; then
-        echo $b
-        ./script.sh install
+    if [[ ! "$b" =~ "system" ]];
+        git checkout --quiet $b
+        if [ -f ./script.sh ]; then
+            echo $b
+            ./script.sh install
+        fi
     fi
 done
