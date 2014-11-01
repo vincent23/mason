@@ -1,3 +1,8 @@
+#!/bin/bash
+
+set -e
+set -o pipefail
+
 if [ ! -d ~/.mason ]; then
     git clone --depth=1 https://github.com/mapbox/mason.git ~/.mason
     alias mason='~/.mason/mason'
