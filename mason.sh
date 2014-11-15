@@ -79,8 +79,8 @@ elif [ ${MASON_PLATFORM} = 'android' ]; then
     fi
     
     #MASON_ANDROID_ARCH=${MASON_ANDROID_ARCH:arm}
-    #export MASON_ANDROID_ARCH="arm"
-    export MASON_ANDROID_ARCH="x86"
+    export MASON_ANDROID_ARCH="arm"
+    #export MASON_ANDROID_ARCH="x86"
     
     MASON_ANDROID_PLATFORM="9"
     export MASON_PLATFORM_VERSION="${MASON_ANDROID_ARCH}-${MASON_ANDROID_PLATFORM}"
