@@ -85,14 +85,14 @@ elif [ ${MASON_PLATFORM} = 'android' ]; then
     MASON_ANDROID_PLATFORM="9"
     #export MASON_PLATFORM_VERSION="${MASON_ANDROID_ARCH}-${MASON_ANDROID_PLATFORM}"
     export MASON_PLATFORM_VERSION="9"
-    MASON_API_LEVEL=${MASON_API_LEVEL:-android-$MASON_ANDROID_PLATFORM}
+    MASON_API_LEVEL=${MASON_API_LEVEL:-android-$MASON_ANDROID_VERSION}
     
     MASON_SDK_ROOT="${MASON_ROOT}/.android-platform/"
     MASON_SDK_PATH="${MASON_SDK_ROOT}/sysroot"
     export PATH=${MASON_SDK_ROOT}/bin:${PATH}
     
-    CFLAGS="-fPIC"
-    LDFLAGS=""
+    #CFLAGS="-fPIC"
+    #LDFLAGS=""
     export CPPFLAGS="-D__ANDROID__"
 
     #if [ ${MASON_ANDROID_ARCH} = 'arm' ]; then
@@ -100,8 +100,8 @@ elif [ ${MASON_PLATFORM} = 'android' ]; then
         MASON_ANDROID_CROSS_COMPILER="arm-linux-androideabi-4.9"
         export MASON_HOST_ARG="--host=${MASON_ANDROID_TOOLCHAIN}"
 
-        export CFLAGS="-march=armv7-a -mfloat-abi=hard -mhard-float -D_NDK_MATH_NO_SOFTFP=1 -D_LITTLE_ENDIAN ${CFLAGS}"
-        export LDFLAGS="-Wl,--fix-cortex-a8 -Wl,--no-warn-mismatch -lm_hard ${LDFLAGS}"
+        export CFLAGS="-march=armv7-a -mfloat-abi=hard -mhard-float -D_NDK_MATH_NO_SOFTFP=1 -fPIC -D_LITTLE_ENDIAN"
+        export LDFLAGS="-Wl,--fix-cortex-a8 -Wl,--no-warn-mismatch -lm_hard"
         
     #elif [ ${MASON_ANDROID_ARCH} = 'x86' ]; then
     #    MASON_ANDROID_TOOLCHAIN="i686-linux-android"
