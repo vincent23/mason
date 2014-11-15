@@ -94,7 +94,7 @@ elif [ ${MASON_PLATFORM} = 'android' ]; then
     LDFLAGS=""
     export CPPFLAGS="-D__ANDROID__"
 
-    if [ ${MASON_ANDROID_ARCH} = 'arm' ]; then
+    #if [ ${MASON_ANDROID_ARCH} = 'arm' ]; then
         MASON_ANDROID_TOOLCHAIN="arm-linux-androideabi"
         MASON_ANDROID_CROSS_COMPILER="arm-linux-androideabi-4.9"
         export MASON_HOST_ARG="--host=${MASON_ANDROID_TOOLCHAIN}"
@@ -102,14 +102,14 @@ elif [ ${MASON_PLATFORM} = 'android' ]; then
         export CFLAGS="-march=armv7-a -mfloat-abi=hard -mhard-float -D_NDK_MATH_NO_SOFTFP=1 -D_LITTLE_ENDIAN ${CFLAGS}"
         export LDFLAGS="-Wl,--fix-cortex-a8 -Wl,--no-warn-mismatch -lm_hard ${LDFLAGS}"
         
-    elif [ ${MASON_ANDROID_ARCH} = 'x86' ]; then
-        MASON_ANDROID_TOOLCHAIN="i686-linux-android"
-        MASON_ANDROID_CROSS_COMPILER="x86-4.9"
-        export MASON_HOST_ARG="--host=${MASON_ANDROID_TOOLCHAIN}"
+    #elif [ ${MASON_ANDROID_ARCH} = 'x86' ]; then
+    #    MASON_ANDROID_TOOLCHAIN="i686-linux-android"
+    #    MASON_ANDROID_CROSS_COMPILER="x86-4.9"
+    #    export MASON_HOST_ARG="--host=${MASON_ANDROID_TOOLCHAIN}"
 
-        export CFLAGS="-march=i686 -msse3 -mstackrealign -mfpmath=sse ${CFLAGS}"
-        export LDFLAGS="${LDFLAGS}"
-    fi
+    #    export CFLAGS="-march=i686 -msse3 -mstackrealign -mfpmath=sse ${CFLAGS}"
+    #    export LDFLAGS="${LDFLAGS}"
+    #fi
     
     export CXX="${MASON_ANDROID_TOOLCHAIN}-clang++"
     export CC="${MASON_ANDROID_TOOLCHAIN}-clang"
