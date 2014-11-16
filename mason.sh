@@ -96,8 +96,8 @@ elif [ ${MASON_PLATFORM} = 'android' ]; then
     export CPPFLAGS="-D__ANDROID__"
 
     #if [ ${MASON_ANDROID_ARCH} = 'arm' ]; then
-        MASON_ANDROID_TOOLCHAIN="arm-linux-androideabi"
         MASON_ANDROID_TOOLCHAIN="${MASON_ANDROID_ARCH}-linux-androideabi"
+         MASON_ANDROID_CROSS_COMPILER="${MASON_ANDROID_TOOLCHAIN}-4.9"
         export MASON_HOST_ARG="--host=${MASON_ANDROID_TOOLCHAIN}"
 
         export CFLAGS="-march=armv7-a -mfloat-abi=hard -mhard-float -D_NDK_MATH_NO_SOFTFP=1 -fPIC -D_LITTLE_ENDIAN"
